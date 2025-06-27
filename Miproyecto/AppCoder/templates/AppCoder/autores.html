@@ -1,6 +1,6 @@
 {% extends 'AppCoder/base.html' %}
 
-{% block title %}Libros{% endblock title %}
+{% block title %}Autores{% endblock title %}
 
 {% block content_title %}
 <style>
@@ -24,4 +24,13 @@
 {% endblock content_title %}
 
 {% block content %}
+<h1>Formulario para crear un autor</h1>
+<form method="post">
+    {% csrf_token %}
+    <table>
+        {{form.as_table}}
+    </table>
+    <input type="submit" value="Enviar">
+    <a href="{% url 'index' %}">Cancelar</a>
+</form>
 {% endblock content %} 
