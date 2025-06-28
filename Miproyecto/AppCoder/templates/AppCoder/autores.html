@@ -27,10 +27,22 @@
 <h1>Formulario para crear un autor</h1>
 <form method="post">
     {% csrf_token %}
-    <table>
-        {{form.as_table}}
-    </table>
+    <label for="{{ form.nombre.id_for_label }}">Nombre:</label>
+    {{ form.nombre }}<br>
+    <label for="{{ form.apellido.id_for_label }}">Apellido:</label>
+    {{ form.apellido }}<br>
+    <label for="{{ form.fecha_nacimiento.id_for_label }}">Fecha de Nacimiento:</label>
+    {{ form.fecha_nacimiento }}<br>
+    <label for="{{ form.nacionalidad.id_for_label }}">Nacionalidad:</label>
+    {{ form.nacionalidad }}<br>
+
+    {% if form.non_field_errors %}
+        <div style="color:red;">
+            {{ form.non_field_errors }}
+        </div>
+    {% endif %}
+
     <input type="submit" value="Enviar">
-    <a href="{% url 'index' %}">Cancelar</a>
+    <button style="background-color: red;" type="reset">Cancelar</button>
 </form>
 {% endblock content %} 

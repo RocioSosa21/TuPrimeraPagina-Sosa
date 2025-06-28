@@ -21,7 +21,7 @@ def autores_create(request):
             form.save()
             return redirect('index')
         else:
-            form.add_error("Faltan datos")
+            form.add_error(None, "Los datos son incorrectos")
 
     else:
         form = AutorForm()
