@@ -24,6 +24,16 @@
         gap: 3px;
         width: 300px;
     }
+    .success {
+        color: green;
+        font-weight: bold;
+    }
+    .info {
+        color: blue;
+    }
+    .error {
+        color: red;
+    }
 </style>
 <div class="titulo-fondo">
     Bibliotecas
@@ -48,6 +58,16 @@
         <div style="color:red;">
             {{ form.non_field_errors }}
         </div>
+    {% endif %}
+
+    {% if messages %}
+    <ul>
+        {% for message in messages %}
+            <li {% if message.tags %} class="{{ message.tags }}" {% endif %}>
+                {{ message }}
+            </li>
+        {% endfor %}
+    </ul>
     {% endif %}
 
     <input type="submit" value="Enviar">

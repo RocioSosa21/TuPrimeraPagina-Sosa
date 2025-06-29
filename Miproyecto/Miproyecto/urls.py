@@ -24,5 +24,5 @@ urlpatterns = [
     path('autores/', views.autores, name='autores'),
     path('libros/', views.libros, name='libros'),
     path('bibliotecas/', views.bibliotecas, name='bibliotecas'),
-    #path(),
+    path('buscar_biblioteca/', views.buscar_biblioteca, name='buscar_biblioteca'),
 ]

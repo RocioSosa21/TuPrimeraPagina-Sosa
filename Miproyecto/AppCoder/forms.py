@@ -2,6 +2,7 @@ from django import forms
 from datetime import date
 from .models import Autor, Libro, Biblioteca
 
+
 class AutorForm(forms.ModelForm):
     class Meta:
         model = Autor
@@ -41,7 +42,7 @@ class LibroForm(forms.ModelForm):
         cleaned_data = super().clean()
         isbn1 = cleaned_data.get("isbn")
         if Libro.objects.filter(isbn=isbn1).exists():
-            raise forms.ValidationError("Ya existe ese libro")
+            raise forms.ValidationError("Ya existe ese libro, el ISBN ya existe")
     
     def clean_fecha_publicacion(self):
         fecha = self.cleaned_data.get("fecha_publicacion")
@@ -60,3 +61,11 @@ class BibliotecaForm(forms.ModelForm):
     class Meta:
         model = Biblioteca
         fields = '__all__'
+    
+class BuscarBibliotecaForm(forms.Form):
+    biblioteca = forms.ModelChoiceField(
+        queryset=Biblioteca.objects.all(),
+        label="Seleccioná una biblioteca",
+        empty_label="Elegí una biblioteca",
+        widget=forms.Select(attrs={'class': 'form-select'})
+    )

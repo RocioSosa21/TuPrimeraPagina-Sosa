@@ -48,13 +48,19 @@
         <label for="{{ form.resumen.id_for_label }}">Resumen:</label>
         {{ form.resumen }}<br>
     </div>
-        
+    
+    {% if form.fecha_publicacion.errors %}
+    <div style="color:red;">
+        {{ form.fecha_publicacion.errors }}
+    </div>
+    {% endif %}
 
     {% if form.non_field_errors %}
         <div style="color:red;">
             {{ form.non_field_errors }}
         </div>
     {% endif %}
+
 
     <input type="submit" value="Enviar">
     <button style="background-color: red;" type="reset">Cancelar</button>
