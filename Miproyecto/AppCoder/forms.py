@@ -5,7 +5,12 @@ from .models import Autor, Libro, Biblioteca
 class AutorForm(forms.ModelForm):
     class Meta:
         model = Autor
-        fields = ["nombre","apellido","fecha_nacimiento","nacionalidad"]
+        fields = '__all__'
+        widgets = {
+            'fecha_nacimiento': forms.DateInput(
+                attrs={'type': 'date', 'class': 'form-control'}
+            )
+        }
     
     def clean(self):
         cleaned_data = super().clean()
@@ -22,17 +27,36 @@ class AutorForm(forms.ModelForm):
 
 
 
-# class LibroForm(forms.ModelForm):
-#     class Meta:
-#         model = Libro
-#         fields = ["titulo","genero","fecha_publicacion","isbn","resumen","autor_id"]
-        
-# class BibliotecaForm(forms.ModelForm):
-#     class Meta:
-#         model = Biblioteca
-#         fields = ["nombre","direccion"]
+class LibroForm(forms.ModelForm):
+    class Meta:
+        model = Libro
+        fields = '__all__'
+        widgets = {
+            'fecha_publicacion': forms.DateInput(
+                attrs={'type': 'date', 'class': 'form-control'}
+            )
+        }
+    
+    def clean(self):
+        cleaned_data = super().clean()
+        isbn1 = cleaned_data.get("isbn")
+        if Libro.objects.filter(isbn=isbn1).exists():
+            raise forms.ValidationError("Ya existe ese libro")
+    
+    def clean_fecha_publicacion(self):
+        fecha = self.cleaned_data.get("fecha_publicacion")
+        if fecha > date.today():
+            raise forms.ValidationError("La fecha de publicacion no puede ser futura.")
+        return fecha
+    
 
-# class BibliotecaLibros(forms.ModelForm):
-#     class Meta:
-#         model = Biblioteca
-#         fields = ["biblioteca_id","libro_id"]
+        
+class BibliotecaForm(forms.ModelForm):
+    libros = forms.ModelMultipleChoiceField(
+        queryset=Libro.objects.all(),
+        widget=forms.CheckboxSelectMultiple, 
+        required=False
+    )
+    class Meta:
+        model = Biblioteca
+        fields = '__all__'

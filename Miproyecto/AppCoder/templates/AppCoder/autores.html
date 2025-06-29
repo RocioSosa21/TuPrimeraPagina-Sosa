@@ -17,6 +17,13 @@
         font-style: italic;
         font-weight: bold;
     }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        width: 300px;
+    }
 </style>
 <div class="titulo-fondo">
     Autores
@@ -27,14 +34,17 @@
 <h1>Formulario para crear un autor</h1>
 <form method="post">
     {% csrf_token %}
-    <label for="{{ form.nombre.id_for_label }}">Nombre:</label>
-    {{ form.nombre }}<br>
-    <label for="{{ form.apellido.id_for_label }}">Apellido:</label>
-    {{ form.apellido }}<br>
-    <label for="{{ form.fecha_nacimiento.id_for_label }}">Fecha de Nacimiento:</label>
-    {{ form.fecha_nacimiento }}<br>
-    <label for="{{ form.nacionalidad.id_for_label }}">Nacionalidad:</label>
-    {{ form.nacionalidad }}<br>
+    <div class="form-group">
+        <label for="{{ form.nombre.id_for_label }}">Nombre:</label>
+        {{ form.nombre }}<br>
+        <label for="{{ form.apellido.id_for_label }}">Apellido:</label>
+        {{ form.apellido }}<br>
+        <label for="{{ form.fecha_nacimiento.id_for_label }}">Fecha de Nacimiento:</label>
+        {{ form.fecha_nacimiento }}<br>
+        <label for="{{ form.pais_de_origen.id_for_label }}">Pais de origen:</label>
+        {{ form.pais_de_origen }}<br>
+    </div>
+        
 
     {% if form.non_field_errors %}
         <div style="color:red;">

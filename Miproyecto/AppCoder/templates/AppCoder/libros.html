@@ -17,6 +17,13 @@
         font-style: italic;
         font-weight: bold;
     }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+        width: 300px;
+    }
 </style>
 <div class="titulo-fondo">
     Libros
@@ -24,4 +31,31 @@
 {% endblock content_title %}
 
 {% block content %}
+<h1>Formulario para crear un Libro</h1>
+<form method="post">
+    {% csrf_token %}
+    <div class="form-group">
+        <label for="{{ form.titulo.id_for_label }}">Titulo:</label>
+        {{ form.titulo }}<br>
+        <label for="{{ form.autor.id_for_label }}">Autor:</label>
+        {{ form.autor}}<br>
+        <label for="{{ form.genero.id_for_label }}">Genero:</label>
+        {{ form.genero }}<br>
+        <label for="{{ form.fecha_publicacion.id_for_label }}">Fecha de Publicacion:</label>
+        {{ form.fecha_publicacion }}<br>
+        <label for="{{ form.isbn.id_for_label }}">ISBN:</label>
+        {{ form.isbn }}<br>
+        <label for="{{ form.resumen.id_for_label }}">Resumen:</label>
+        {{ form.resumen }}<br>
+    </div>
+        
+
+    {% if form.non_field_errors %}
+        <div style="color:red;">
+            {{ form.non_field_errors }}
+        </div>
+    {% endif %}
+
+    <input type="submit" value="Enviar">
+    <button style="background-color: red;" type="reset">Cancelar</button>
 {% endblock content %}
