@@ -16,13 +16,33 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from AppCoder import views
+from AppCoder import views as appcoder_views
+from Usuario import views as usuario_views
+from django.contrib.auth.views import LoginView
+from django.conf import settings
+from django.conf.urls.static import static
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', views.index, name='index'),
-    path('autores/', views.autores, name='autores'),
-    path('libros/', views.libros, name='libros'),
-    path('bibliotecas/', views.bibliotecas, name='bibliotecas'),
-    path('buscar_biblioteca/', views.buscar_biblioteca, name='buscar_biblioteca'),
+    path('', appcoder_views.index, name='index'),
+    path('autores/', appcoder_views.autores, name='autores'),
+    path('libros/',appcoder_views.libros, name='libros'),
+    path('bibliotecas/', appcoder_views.bibliotecas, name='bibliotecas'),
+    path('buscar_biblioteca/', appcoder_views.buscar_biblioteca, name='buscar_biblioteca'),
+    path('biblioteca/<int:biblioteca_id>/agregar-libro/', appcoder_views.agregar_libro_a_biblioteca, name='agregar_libro_a_biblioteca'),
+    path('libro/<int:libro_id>/editar/', appcoder_views.editar_libro, name='editar_libro'),
+    path('libro/<int:libro_id>/eliminar/', appcoder_views.eliminar_libro, name='eliminar_libro'),
+    path('editarPerfil/', usuario_views.editarPerfil, name='editarPerfil'),
+    path('login/', LoginView.as_view(
+        template_name='Usuario/login.html',
+        redirect_authenticated_user=True,
+        next_page='index' 
+    ), name='login'),
+    path('logout/', usuario_views.cerrar_sesion, name='logout'),
+    path('register/', usuario_views.registro, name='register'),
+    path('sobre-mi/', appcoder_views.sobre_mi, name='sobre_mi'),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -1,0 +1,18 @@
+{% extends 'AppCoder/base.html' %}
+
+{% block title %}Editar Libro{% endblock title %}
+{% block content_title %}
+<div class="titulo-fondo">
+    Editar: {{ libro.titulo }}
+</div>
+{% endblock content_title %}
+
+{% block content %}
+<div class="card p-4">
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-warning w-100">Guardar cambios</button>
+    </form>
+</div>
+{% endblock %}

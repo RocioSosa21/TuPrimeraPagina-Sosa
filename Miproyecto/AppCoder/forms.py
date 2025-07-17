@@ -26,6 +26,40 @@ class AutorForm(forms.ModelForm):
             raise forms.ValidationError("La fecha de nacimiento no puede ser futura.")
         return fecha
 
+class AgregarLibroABibliotecaForm(forms.Form):
+    libro_existente = forms.ModelChoiceField(
+        queryset=Libro.objects.all(),
+        required=False,
+        label="Seleccionar un libro existente",
+        widget=forms.Select(attrs={'class': 'form-select'})
+    )
+    crear_nuevo = forms.BooleanField(
+        required=False,
+        label="¿Querés crear un nuevo libro?"
+    )
+    titulo = forms.CharField(required=False)
+    autor = forms.ModelChoiceField(queryset=Autor.objects.all(), required=False)
+    genero = forms.CharField(required=False)
+    fecha_publicacion = forms.DateField(required=False, widget=forms.DateInput(attrs={'type': 'date'}))
+    isbn = forms.CharField(required=False)
+    resumen = forms.CharField(widget=forms.Textarea, required=False)
+
+    def clean(self):
+        cleaned_data = super().clean()
+        crear_nuevo = cleaned_data.get("crear_nuevo")
+
+        if crear_nuevo:
+            campos_requeridos = ['titulo', 'autor', 'genero', 'fecha_publicacion', 'isbn']
+            for campo in campos_requeridos:
+                if not cleaned_data.get(campo):
+                    raise forms.ValidationError(f"El campo {campo} es obligatorio para crear un nuevo libro.")
+                    
+            isbn = cleaned_data.get('isbn')
+            if Libro.objects.filter(isbn=isbn).exists():
+                raise forms.ValidationError("Ya existe un libro con ese ISBN.")
+        else:
+            if not cleaned_data.get("libro_existente"):
+                raise forms.ValidationError("Debés seleccionar un libro existente o crear uno nuevo.")
 
 
 class LibroForm(forms.ModelForm):
@@ -37,12 +71,12 @@ class LibroForm(forms.ModelForm):
                 attrs={'type': 'date', 'class': 'form-control'}
             )
         }
-    
+
     def clean(self):
         cleaned_data = super().clean()
-        isbn1 = cleaned_data.get("isbn")
-        if Libro.objects.filter(isbn=isbn1).exists():
-            raise forms.ValidationError("Ya existe ese libro, el ISBN ya existe")
+        isbn = cleaned_data.get("isbn")
+        if isbn and Libro.objects.filter(isbn=isbn).exclude(id=self.instance.id).exists():
+            raise forms.ValidationError("Ya existe un libro con ese ISBN.")
     
     def clean_fecha_publicacion(self):
         fecha = self.cleaned_data.get("fecha_publicacion")
@@ -63,9 +97,18 @@ class BibliotecaForm(forms.ModelForm):
         fields = '__all__'
     
 class BuscarBibliotecaForm(forms.Form):
-    biblioteca = forms.ModelChoiceField(
-        queryset=Biblioteca.objects.all(),
-        label="Seleccioná una biblioteca",
-        empty_label="Elegí una biblioteca",
-        widget=forms.Select(attrs={'class': 'form-select'})
-    )
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        bibliotecas = Biblioteca.objects.all()
+        if bibliotecas.exists():
+            self.fields['biblioteca'] = forms.ModelChoiceField(
+                queryset=bibliotecas,
+                label="Seleccioná una biblioteca",
+                empty_label="Elegí una biblioteca",
+                widget=forms.Select(attrs={'class': 'form-select'})
+            )
+        else:
+            self.fields['biblioteca'] = forms.ChoiceField(
+                choices=[('', 'No hay bibliotecas para mostrar')],
+                widget=forms.Select(attrs={'class': 'form-select', 'disabled': 'disabled'})
+            )

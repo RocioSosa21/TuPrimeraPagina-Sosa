@@ -1,0 +1,78 @@
+{% extends "AppCoder/base.html" %}
+{% load widget_tweaks %}
+{% block content %}
+<div class="container mt-5" style="max-width: 600px;">
+    <h2 class="mb-4 text-center">Editar Perfil</h2>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <div class="mb-3">
+            <label for="id_username" class="form-label fw-bold">Nombre de usuario</label>
+            {{ form.username|add_class:"form-control" }}
+            {% if form.username.errors %}
+                <div class="text-danger">{{ form.username.errors.0 }}</div>
+            {% endif %}
+        </div>
+
+        <div class="mb-3">
+            <label for="id_email" class="form-label fw-bold">Correo electrónico</label>
+            {{ form.email|add_class:"form-control" }}
+            {% if form.email.errors %}
+                <div class="text-danger">{{ form.email.errors.0 }}</div>
+            {% endif %}
+        </div>
+
+        <div class="mb-3">
+            <label for="id_password" class="form-label fw-bold">Contraseña (dejar vacío para no cambiar)</label>
+            {{ form.password|add_class:"form-control" }}
+            {% if form.password.errors %}
+                {% for error in form.password.errors %}
+                    <div class="text-danger">{{ error }}</div>
+                {% endfor %}
+            {% endif %}
+        </div>
+
+        <div class="mb-3">
+            <label for="id_biografia" class="form-label fw-bold">Biografía</label>
+            {{ form.biografia|add_class:"form-control" }}
+            {% if form.biografia.errors %}
+                <div class="text-danger">{{ form.biografia.errors.0 }}</div>
+            {% endif %}
+        </div>
+
+        <div class="mb-3">
+            <label for="id_fecha_nacimiento" class="form-label fw-bold">Fecha de nacimiento</label>
+            {{ form.fecha_nacimiento|add_class:"form-control" }}
+            {% if form.fecha_nacimiento.errors %}
+                <div class="text-danger">{{ form.fecha_nacimiento.errors.0 }}</div>
+            {% endif %}
+        </div>
+
+        <div class="mb-3">
+            <label for="id_imagen" class="form-label fw-bold">Avatar</label>
+            {{ form.imagen|add_class:"form-control" }}
+            {% if form.imagen.errors %}
+                <div class="text-danger"><br>{{ form.imagen.errors.0 }}</div>
+            {% endif %}
+            {% if user.perfil.imagen %}
+                <br>
+                <img src="{{ user.perfil.imagen.url }}" alt="Avatar actual" style="max-height: 100px; margin-top: 10px;">
+            {% endif %}
+        </div>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <div class="d-flex justify-content-between">
+            <button type="submit" class="btn btn-success fw-bold">Guardar Cambios</button>
+            <a href="{% url 'index' %}" class="btn btn-danger fw-bold">Cancelar</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

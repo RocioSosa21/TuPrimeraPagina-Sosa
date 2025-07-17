@@ -1,10 +1,80 @@
 from django.shortcuts import render, redirect
-from .forms import AutorForm, LibroForm, BibliotecaForm, BuscarBibliotecaForm
-from .models import Biblioteca
+from .forms import AutorForm, LibroForm, BibliotecaForm, BuscarBibliotecaForm, AgregarLibroABibliotecaForm
+from .models import Biblioteca, Libro
 from django.contrib import messages
+from django.shortcuts import get_object_or_404
+from django.contrib.auth.decorators import login_required
+
+@login_required
+def agregar_libro_a_biblioteca(request, biblioteca_id):
+    biblioteca = get_object_or_404(Biblioteca, id=biblioteca_id)
+
+    if request.method == 'POST':
+        form = AgregarLibroABibliotecaForm(request.POST)
+        if form.is_valid():
+            if form.cleaned_data['crear_nuevo']:
+                nuevo_libro = Libro.objects.create(
+                    titulo=form.cleaned_data['titulo'],
+                    autor=form.cleaned_data['autor'],
+                    genero=form.cleaned_data['genero'],
+                    fecha_publicacion=form.cleaned_data['fecha_publicacion'],
+                    isbn=form.cleaned_data['isbn'],
+                    resumen=form.cleaned_data['resumen']
+                )
+                biblioteca.libros.add(nuevo_libro)
+                messages.success(request, f"Se agregó el libro '{nuevo_libro.titulo}' a la biblioteca.")
+            else:
+                libro = form.cleaned_data['libro_existente']
+                if libro not in biblioteca.libros.all():
+                    biblioteca.libros.add(libro)
+                    messages.success(request, f"Se agregó el libro '{libro.titulo}' a la biblioteca.")
+                else:
+                    messages.info(request, "Ese libro ya estaba en la biblioteca.")
+            return redirect('buscar_biblioteca')
+    else:
+        form = AgregarLibroABibliotecaForm()
+
+    return render(request, 'AppCoder/agregar_libro.html', {
+        'form': form,
+        'biblioteca': biblioteca
+    })
 
 
-# Create your views here.
+@login_required
+def editar_libro(request, libro_id):
+    libro = get_object_or_404(Libro, id=libro_id)
+
+    if request.method == "POST":
+        form = LibroForm(request.POST, instance=libro)
+        if form.is_valid():
+            form.save()
+            messages.success(request, f"El libro '{libro.titulo}' fue actualizado.")
+            return redirect('buscar_biblioteca')
+    else:
+        form = LibroForm(instance=libro)
+
+    return render(request, "AppCoder/editar_libro.html", {
+        "form": form,
+        "libro": libro
+    })
+
+@login_required
+def eliminar_libro(request, libro_id):
+    libro = get_object_or_404(Libro, id=libro_id)
+
+    if request.method == "POST":
+        titulo = libro.titulo
+        libro.delete()
+        messages.success(request, f"El libro '{titulo}' fue eliminado correctamente.")
+        return redirect('buscar_biblioteca')
+
+    return render(request, "AppCoder/eliminar_libro.html", {
+        "libro": libro
+    })
+
+def sobre_mi(request):
+    return render(request, 'AppCoder/sobre_mi.html')
+
 def index(request):
     return render(request,"AppCoder/index.html")
 
@@ -64,20 +134,15 @@ def bibliotecas(request):
     return render(request, 'AppCoder/bibliotecas.html', {'form': form})
 
 def buscar_biblioteca(request):
-    resultado = None
-    libros = []
-    
-    if request.method == 'POST':
-        form = BuscarBibliotecaForm(request.POST)
-        if form.is_valid():
-            biblioteca = form.cleaned_data['biblioteca']
-            resultado = biblioteca
-            libros = biblioteca.libros.all()
-    else:
-        form = BuscarBibliotecaForm()
+    form = BuscarBibliotecaForm(request.GET or None)
+    bibliotecas = []
+
+    if form.is_valid():
+        biblioteca = form.cleaned_data.get('biblioteca')
+        if biblioteca:
+            bibliotecas = [biblioteca] 
 
     return render(request, 'AppCoder/buscar_biblioteca.html', {
         'form': form,
-        'biblioteca': resultado,
-        'libros': libros
+        'bibliotecas': bibliotecas
     })

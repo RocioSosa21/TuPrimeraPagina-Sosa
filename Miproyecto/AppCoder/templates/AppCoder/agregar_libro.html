@@ -1,0 +1,85 @@
+{% extends 'AppCoder/base.html' %}
+{% block content_title %}
+<style>
+    .titulo-fondo {
+        background-image: url("https://blog.pearsonlatam.com/hs-fs/hubfs/Blog%20HED/Multimedia/Im%C3%A1genes%20de%20Blog/beneficios-de-las-bibliotecas-virtuales-lectura-dinamica.jpg?width=800&name=beneficios-de-las-bibliotecas-virtuales-lectura-dinamica.jpg");
+        background-size: cover;
+        background-position: center;
+        padding: 80px 20px;
+        border-radius: 15px;
+        text-align: center;
+        color: rgb(12, 12, 12);
+        text-shadow: 2px 2px 6px rgba(149, 143, 143, 0.7);
+        font-size: 4rem;
+        font-style: italic;
+        font-weight: bold;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+        width: 300px;
+
+    }
+</style>
+<div class="titulo-fondo">
+    Agregar Libro
+</div>
+{% endblock content_title %}
+
+{% block content %}
+<h2>Agregar libro a la biblioteca: {{ biblioteca.nombre }}</h2>
+
+<form method="post" id="form-agregar-libro">
+    <div class="form-group">
+    {% csrf_token %}
+        <div id="campo-libro-existente">
+            <label style="font-weight: bold;" for="{{ form.titulo.id_for_label }}">
+                Selecciona el titulo del libro
+            </label>
+            {{ form.libro_existente }}<br>
+        </div>
+
+        <label>
+            <input type="checkbox" id="crear-nuevo-libro-checkbox" name="crear_nuevo">
+            ¿Querés crear un nuevo libro?
+        </label>
+        
+        <div id="campos-nuevo-libro" style="display:none;">
+            <label style="font-weight: bold;" for="{{ form.titulo.id_for_label }}">Titulo:</label>
+                {{ form.titulo }}<br>
+            <label style="font-weight: bold;" for="{{ form.autor.id_for_label }}">Autor:</label>
+                {{ form.autor}}<br>
+            <label style="font-weight: bold;" for="{{ form.genero.id_for_label }}">Genero:</label>
+                {{ form.genero }}<br>
+            <label style="font-weight: bold;" for="{{ form.fecha_publicacion.id_for_label }}">Fecha de Publicacion:</label>
+                {{ form.fecha_publicacion }}<br>
+            <label style="font-weight: bold;" for="{{ form.isbn.id_for_label }}">ISBN:</label>
+                {{ form.isbn }}<br>
+            <label style="font-weight: bold;" for="{{ form.resumen.id_for_label }}">Resumen:</label>
+                {{ form.resumen }}<br>
+        </div>
+    </div>
+
+    <button type="submit" class="btn btn-success">Agregar</button>
+</form>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const checkbox = document.getElementById('crear-nuevo-libro-checkbox');
+        const camposNuevo = document.getElementById('campos-nuevo-libro');
+        const campoExistente = document.getElementById('campo-libro-existente');
+
+        function toggleCampos() {
+            const mostrarNuevo = checkbox.checked;
+            camposNuevo.style.display = mostrarNuevo ? 'block' : 'none';
+            campoExistente.style.display = mostrarNuevo ? 'none' : 'block';
+        }
+
+        checkbox.addEventListener('change', toggleCampos);
+
+        toggleCampos();
+    });
+</script>
+{% endblock %}
