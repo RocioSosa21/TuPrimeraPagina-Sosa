@@ -37,6 +37,9 @@
                 <li class="nav-item">
                     <a class="nav-link{% if request.resolver_match.url_name == 'sobre_mi' %} active{% endif %}" href="{% url 'sobre_mi' %}">Sobre mí</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link{% if request.resolver_match.url_name == 'lista_bibliotecas' %} active{% endif %}" href="{% url 'lista_bibliotecas' %}">Bibliotecas</a>
+                </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="perfilDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         {% if user.is_authenticated %}

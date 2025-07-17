@@ -23,12 +23,13 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', appcoder_views.index, name='index'),
     path('autores/', appcoder_views.autores, name='autores'),
     path('libros/',appcoder_views.libros, name='libros'),
-    path('bibliotecas/', appcoder_views.bibliotecas, name='bibliotecas'),
+    path('crear_bibliotecas/', appcoder_views.bibliotecas, name='bibliotecas'),
     path('buscar_biblioteca/', appcoder_views.buscar_biblioteca, name='buscar_biblioteca'),
     path('biblioteca/<int:biblioteca_id>/agregar-libro/', appcoder_views.agregar_libro_a_biblioteca, name='agregar_libro_a_biblioteca'),
     path('libro/<int:libro_id>/editar/', appcoder_views.editar_libro, name='editar_libro'),
@@ -42,6 +43,10 @@ urlpatterns = [
     path('logout/', usuario_views.cerrar_sesion, name='logout'),
     path('register/', usuario_views.registro, name='register'),
     path('sobre-mi/', appcoder_views.sobre_mi, name='sobre_mi'),
+    path('bibliotecas/', appcoder_views.BibliotecaListView.as_view(), name='lista_bibliotecas'),
+    path('bibliotecas/<int:pk>/', appcoder_views.BibliotecaDetailView.as_view(), name='detalle_biblioteca'),
+    path('bibliotecas/<int:pk>/editar/', appcoder_views.BibliotecaUpdateView.as_view(), name='editar_biblioteca'),
+    path('bibliotecas/<int:pk>/eliminar/', appcoder_views.BibliotecaDeleteView.as_view(), name='eliminar_biblioteca'),
 ]
 
 if settings.DEBUG:

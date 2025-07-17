@@ -1,0 +1,44 @@
+{% extends 'AppCoder/base.html' %}
+{% block content_title %}
+<style>
+    .titulo-fondo {
+        background-image: url("https://blog.pearsonlatam.com/hs-fs/hubfs/Blog%20HED/Multimedia/Im%C3%A1genes%20de%20Blog/beneficios-de-las-bibliotecas-virtuales-lectura-dinamica.jpg?width=800&name=beneficios-de-las-bibliotecas-virtuales-lectura-dinamica.jpg");
+        background-size: cover;
+        background-position: center;
+        padding: 80px 20px;
+        border-radius: 15px;
+        text-align: center;
+        color: rgb(12, 12, 12);
+        text-shadow: 2px 2px 6px rgba(149, 143, 143, 0.7);
+        font-size: 4rem;
+        font-style: italic;
+        font-weight: bold;
+    }
+</style>
+<div class="titulo-fondo">
+    Editar Biblioteca
+</div>
+{% endblock content_title %}
+
+{% block content %}
+    <div class="container mt-4">
+        <h2>Editar Biblioteca</h2>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.non_field_errors }}
+            <div class="mb-3">
+                {{ form.nombre.label_tag }} {{ form.nombre }}
+            </div>
+            <div class="mb-3">
+                {{ form.direccion.label_tag }} {{ form.direccion }}
+            </div>
+            <div class="mb-3">
+                <label><strong>Libros asociados:</strong></label>
+                {{ form.libros }}
+            </div>
+            <button type="submit" class="btn btn-success">Guardar cambios</button>
+            <a href="{% url 'lista_bibliotecas' %}" class="btn btn-secondary">Cancelar</a>
+        </form>
+    </div>
+{% endblock %}
+

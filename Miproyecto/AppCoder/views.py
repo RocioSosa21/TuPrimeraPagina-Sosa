@@ -4,6 +4,35 @@ from .models import Biblioteca, Libro
 from django.contrib import messages
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import login_required
+from django.views.generic import ListView, DetailView, UpdateView, DeleteView
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.urls import reverse_lazy
+
+class BibliotecaListView(ListView):
+    model = Biblioteca
+    template_name = 'AppCoder/lista_bibliotecas.html'
+    context_object_name = 'bibliotecas'
+
+class BibliotecaDetailView(DetailView):
+    model = Biblioteca
+    template_name = 'AppCoder/detalle_biblioteca.html'
+    context_object_name = 'biblioteca'
+
+class BibliotecaUpdateView(LoginRequiredMixin, UpdateView):
+    model = Biblioteca
+    form_class = BibliotecaForm
+    template_name = 'AppCoder/editar_biblioteca.html'
+    success_url = reverse_lazy('lista_bibliotecas')
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        form.instance.libros.set(form.cleaned_data['libros'])  
+        return response
+
+class BibliotecaDeleteView(LoginRequiredMixin, DeleteView):
+    model = Biblioteca
+    template_name = 'AppCoder/eliminar_biblioteca.html'
+    success_url = reverse_lazy('lista_bibliotecas')
 
 @login_required
 def agregar_libro_a_biblioteca(request, biblioteca_id):
